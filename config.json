@@ -280,7 +280,7 @@
       "style": {
         "type": "list"
       },
-      "ext": ""
+      "ext": "https://raw.githubusercontent.com/abu168888/tvbox-config/main/lib/quark_token.txt"
     },
     {
       "key": "WexWoBaidu",
@@ -293,7 +293,7 @@
       "style": {
         "type": "list"
       },
-      "ext": ""
+      "ext": "https://raw.githubusercontent.com/abu168888/tvbox-config/main/lib/baidu_token.txt"
     },
     {
       "key": "Wex115share",
@@ -305,7 +305,8 @@
       "timeout": 50,
       "style": {
         "type": "list"
-      }
+      },
+      "ext": ""
     },
     {
       "key": "WexWo189",
@@ -317,7 +318,8 @@
       "timeout": 50,
       "style": {
         "type": "list"
-      }
+      },
+      "ext": ""
     },
     {
       "key": "WexWo123",
@@ -329,7 +331,8 @@
       "timeout": 50,
       "style": {
         "type": "list"
-      }
+      },
+      "ext": ""
     },
     {
       "key": "WexXunLei",
@@ -341,7 +344,8 @@
       "timeout": 50,
       "style": {
         "type": "list"
-      }
+      },
+      "ext": ""
     },
     {
       "key": "Wexduanjuvop",
