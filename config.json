@@ -4,6 +4,29 @@
   "logo": "https://storage.7x24cc.com/storage-server/presigned/ss1/a6-online-fileupload/newMediaFile/3CEAE9E_773_wexfnw_20250911190012684newMediaFile.gif",
   "sites": [
     {
+      "key": "Wexconfig",
+      "name": "Config Center",
+      "type": 3,
+      "api": "csp_WexConfigGuard",
+      "searchable": 0,
+      "changeable": 0,
+      "indexs": 0,
+      "style": {
+        "type": "list"
+      }
+    },
+    {
+      "key": "NewDouBan",
+      "name": "Douban Hot",
+      "type": 3,
+      "api": "csp_NewDouBanGuard",
+      "indexs": 1,
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://abu168888.github.io/tvbox-config/lib/20260414181247-ae51abfbfe.txt"
+    },
+    {
       "key": "WexEmby",
       "name": "[4K 超清] 🀄️emby┃4K🀄️",
       "type": 3,
@@ -39,46 +62,10 @@
       "changeable": 0
     },
     {
-      "key": "新6V",
-      "name": "[秒播专线] 🎇新6V┃磁力🎇",
-      "type": 3,
-      "api": "csp_WexXb6vGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
-      "key": "WexIkanBot",
-      "name": "[秒播专线] 🎇爱看┃采集🎇",
-      "type": 3,
-      "api": "csp_WexIkanBotGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
       "key": "WexYiYs",
       "name": "[秒播专线] 💥伊影┃秒播💥",
       "type": 3,
       "api": "csp_WexYiYsGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
-      "key": "WexV6TeGou",
-      "name": "[秒播专线] 💥太狗┃秒播💥",
-      "type": 3,
-      "api": "csp_WexV6TeGouGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
-      "key": "WexV6DaShiXiong",
-      "name": "[秒播专线] 💥师兄┃秒播💥",
-      "type": 3,
-      "api": "csp_WexV6DaShiXiongGuard",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 0
@@ -103,15 +90,6 @@
       "changeable": 0
     },
     {
-      "key": "WexDuBoKu",
-      "name": "[秒播专线] 💥独播┃秒播💥",
-      "type": 3,
-      "api": "csp_WexDuBoKuGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
       "key": "WexGuaZi",
       "name": "[秒播专线] 💥瓜子┃秒播💥",
       "type": 3,
@@ -130,13 +108,15 @@
       "changeable": 0
     },
     {
-      "key": "WexHanXiaoQuan",
-      "name": "[秒播专线] 💥韩剧┃秒播💥",
+      "key": "SportGuaZi",
+      "name": "[体育直播] 🌐瓜子┃体育🌐",
       "type": 3,
-      "api": "csp_WexHanXiaoQuanGuard",
+      "api": "csp_SportGuaZiGuard",
       "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
+      "changeable": 0,
+      "style": {
+        "type": "list"
+      }
     },
     {
       "key": "ManJuQiMao",
@@ -220,17 +200,6 @@
       "changeable": 0
     },
     {
-      "key": "SportGuaZi",
-      "name": "[体育直播] 🌐瓜子┃体育🌐",
-      "type": 3,
-      "api": "csp_SportGuaZiGuard",
-      "searchable": 1,
-      "changeable": 0,
-      "style": {
-        "type": "list"
-      }
-    },
-    {
       "key": "SportWwe",
       "name": "[体育直播] 🌐WWE┃体育🌐",
       "type": 3,
@@ -283,29 +252,6 @@
       }
     },
     {
-      "key": "Wexconfig",
-      "name": "Config Center",
-      "type": 3,
-      "api": "csp_WexConfigGuard",
-      "searchable": 0,
-      "changeable": 0,
-      "indexs": 0,
-      "style": {
-        "type": "list"
-      }
-    },
-    {
-      "key": "NewDouBan",
-      "name": "Douban Hot",
-      "type": 3,
-      "api": "csp_NewDouBanGuard",
-      "indexs": 1,
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://abu168888.github.io/tvbox-config/lib/20260414181247-ae51abfbfe.txt"
-    },
-    {
       "key": "So97So",
       "name": "Search 97",
       "type": 3,
@@ -331,12 +277,116 @@
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 0
+    },
+    {
+      "key": "SelfShortDrama",
+      "name": "🎬短剧┃自主采集",
+      "type": 3,
+      "api": "csp_SelfShortDrama",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0,
+      "ext": "http://192.168.1.100:5000/api/v1/short_drama"
+    },
+    {
+      "key": "SelfVariety",
+      "name": "📺综艺┃自主采集",
+      "type": 3,
+      "api": "csp_SelfVariety",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0,
+      "ext": "http://192.168.1.100:5000/api/v1/variety"
+    },
+    {
+      "key": "SelfHot",
+      "name": "🔥热门┃自主采集",
+      "type": 3,
+      "api": "csp_SelfHot",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0,
+      "ext": "http://192.168.1.100:5000/api/v1/hot"
+    },
+    {
+      "key": "新6V",
+      "name": "[秒播专线] 🎇新6V┃磁力🎇",
+      "type": 3,
+      "api": "csp_WexXb6vGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
+    },
+    {
+      "key": "WexIkanBot",
+      "name": "[秒播专线] 🎇爱看┃采集🎇",
+      "type": 3,
+      "api": "csp_WexIkanBotGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
+    },
+    {
+      "key": "WexV6TeGou",
+      "name": "[秒播专线] 💥太狗┃秒播💥",
+      "type": 3,
+      "api": "csp_WexV6TeGouGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
+    },
+    {
+      "key": "WexV6DaShiXiong",
+      "name": "[秒播专线] 💥师兄┃秒播💥",
+      "type": 3,
+      "api": "csp_WexV6DaShiXiongGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
+    },
+    {
+      "key": "WexDuBoKu",
+      "name": "[秒播专线] 💥独播┃秒播💥",
+      "type": 3,
+      "api": "csp_WexDuBoKuGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
+    },
+    {
+      "key": "WexHanXiaoQuan",
+      "name": "[秒播专线] 💥韩剧┃秒播💥",
+      "type": 3,
+      "api": "csp_WexHanXiaoQuanGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
     }
   ],
   "_version": {
-    "type": "5.0-optimized",
+    "type": "6.0-hybrid-architecture",
     "created": "2026-07-29",
-    "total": 35,
-    "notes": "Added config center, douban, search. Fixed WenCai ext."
+    "total_sources": 38,
+    "description": "混合架构 - 35 源 + 3 自主采集 API",
+    "features": [
+      "配置中心",
+      "豆瓣热门",
+      "4K 超清",
+      "秒播专线",
+      "短剧专区",
+      "体育直播",
+      "搜索聚合",
+      "自主采集（短剧/综艺/热门）"
+    ],
+    "autonomous_api": {
+      "base_url": "http://192.168.1.100:5000",
+      "docs": "/api/v1",
+      "health": "/health",
+      "collectors": [
+        "short_drama",
+        "variety",
+        "hot"
+      ]
+    }
   }
 }
