@@ -90,7 +90,8 @@
       "api": "csp_WexWenCaiGuard",
       "searchable": 1,
       "quickSearch": 1,
-      "changeable": 0
+      "changeable": 0,
+      "ext": "https://api.wenchai.net"
     },
     {
       "key": "WexReBo",
@@ -280,12 +281,62 @@
       "style": {
         "type": "list"
       }
+    },
+    {
+      "key": "Wexconfig",
+      "name": "Config Center",
+      "type": 3,
+      "api": "csp_WexConfigGuard",
+      "searchable": 0,
+      "changeable": 0,
+      "indexs": 0,
+      "style": {
+        "type": "list"
+      }
+    },
+    {
+      "key": "NewDouBan",
+      "name": "Douban Hot",
+      "type": 3,
+      "api": "csp_NewDouBanGuard",
+      "indexs": 1,
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://abu168888.github.io/tvbox-config/lib/20260414181247-ae51abfbfe.txt"
+    },
+    {
+      "key": "So97So",
+      "name": "Search 97",
+      "type": 3,
+      "api": "csp_So97SoGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
+    },
+    {
+      "key": "SoHaiYin",
+      "name": "Search HaiYin",
+      "type": 3,
+      "api": "csp_SoHaiYinGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
+    },
+    {
+      "key": "SoTySo",
+      "name": "Search TySo",
+      "type": 3,
+      "api": "csp_SoTySoGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
     }
   ],
   "_version": {
-    "type": "3.0-real-fusion",
-    "created": "2026-07-28 20:38:21",
-    "total_sources": 30,
-    "note": "All sources use REAL verified Guard classes"
+    "type": "5.0-optimized",
+    "created": "2026-07-29",
+    "total": 35,
+    "notes": "Added config center, douban, search. Fixed WenCai ext."
   }
 }
