@@ -1,0 +1,120 @@
+name: TVBox 失效源检测
+
+on:
+  schedule:
+    - cron: '0 4 */3 * *'
+  workflow_dispatch:
+
+jobs:
+  check-sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: Asia/Shanghai
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: 安装依赖
+        run: pip install requests
+        
+      - name: 检测源健康状态
+        run: |
+          python3 << 'EOF'
+import json
+import requests
+from datetime import datetime
+
+# 读取配置
+with open('config.json', 'r', encoding='utf-8') as f:
+    config = json.load(f)
+
+sites = config.get('sites', [])
+results = {'total': len(sites), 'healthy': [], 'failed': []}
+
+print(f'开始检测 {len(sites)} 个源...')
+
+for site in sites:
+    name = site.get('name', '未知')
+    api = site.get('api', '')
+    
+    if not api:
+        results['failed'].append({'name': name, 'reason': '缺少 api'})
+        print(f'❌ {name}: 缺少 api')
+        continue
+    
+    try:
+        resp = requests.get(api, timeout=8)
+        if resp.status_code == 200 and len(resp.content) > 100:
+            results['healthy'].append(name)
+            print(f'✅ {name}')
+        else:
+            results['failed'].append({'name': name, 'reason': f'status={resp.status_code}, size={len(resp.content)}'})
+            print(f'❌ {name}: 响应异常')
+    except Exception as e:
+        results['failed'].append({'name': name, 'reason': str(e)})
+        print(f'❌ {name}: {str(e)[:50]}')
+
+# 保存结果
+with open('health_check_result.json', 'w') as f:
+    json.dump(results, f, ensure_ascii=False, indent=2)
+
+print(f'\n完成：成功{len(results["healthy"])}, 失败{len(results["failed"])}')
+
+if results['failed']:
+    print('\n失效源:')
+    for item in results['failed']:
+        print(f"  - {item['name']}: {item['reason']}")
+EOF
+
+      - name: 生成报告
+        run: |
+          python3 << 'EOF'
+import json
+from datetime import datetime
+
+with open('health_check_result.json', 'r') as f:
+    data = json.load(f)
+
+report = f"""# TVBox 源健康检测报告
+
+**时间:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} (北京时间)
+
+## 📊 统计
+
+| 项目 | 数量 |
+|------|------|
+| 总源数 | {data['total']} |
+| 正常 | {len(data['healthy'])} |
+| 失效 | {len(data['failed'])} |
+
+## ⚠️ 失效源列表
+
+"""
+
+if data['failed']:
+    report += "| 名称 | 原因 |\n|------|------|\n"
+    for item in data['failed']:
+        report += f"| {item['name']} | {item['reason']} |\n"
+else:
+    report += "无失效源 ✅\n"
+
+with open('HEALTH_REPORT.md', 'w', encoding='utf-8') as f:
+    f.write(report)
+
+print(report)
+EOF
+
+      - name: 提交报告
+        run: |
+          git config user.name "abu-health-check"
+          git config user.email "abu-health@github.com"
+          git add HEALTH_REPORT.md health_check_result.json
+          git commit -m "docs: 源健康检测报告 $(date +'%Y-%m-%d')" || echo "无变化"
+          git push origin master || echo "推送失败"
