@@ -4,6 +4,17 @@
   "logo": "https://storage.7x24cc.com/storage-server/presigned/ss1/a6-online-fileupload/newMediaFile/3CEAE9E_773_wexfnw_20250911190012684newMediaFile.gif",
   "sites": [
     {
+      "key": "NewDouBan",
+      "name": "📚【阿不自制】📚",
+      "type": 3,
+      "api": "csp_NewDouBanGuard",
+      "indexs": 1,
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://cdn.jsdelivr.net/gh/abu168888/tvbox-config@main/lib/20260414181247-ae51abfbfe.txt"
+    },
+    {
       "key": "Wexconfig",
       "name": "🔧【阿不自制】🔧",
       "type": 3,
@@ -14,17 +25,6 @@
       "style": {
         "type": "list"
       }
-    },
-    {
-      "key": "NewDouBan",
-      "name": "📚【阿不自制】📚",
-      "type": 3,
-      "api": "csp_NewDouBanGuard",
-      "indexs": 1,
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://cdn.jsdelivr.net/gh/abu168888/tvbox-config@main/lib/20260414181247-ae51abfbfe.txt"
     },
     {
       "key": "原盘",
@@ -45,6 +45,24 @@
       "changeable": 0
     },
     {
+      "key": "新剧透",
+      "name": "💓‍剧透┃4K💓‍",
+      "type": 3,
+      "api": "csp_NewJuTouGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
+    },
+    {
+      "key": "新至臻",
+      "name": "💓‍至臻┃4K💓‍",
+      "type": 3,
+      "api": "csp_NewZhiZhenGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
+    },
+    {
       "key": "WexBoBo",
       "name": "🎇伯伯┃秒播🎇",
       "type": 3,
@@ -54,8 +72,8 @@
       "changeable": 0
     },
     {
-      "key": "新 6V",
-      "name": "🎇新 6V┃磁力🎇",
+      "key": "新6V",
+      "name": "🎇新6V┃磁力🎇",
       "type": 3,
       "api": "csp_WexXb6vGuard",
       "searchable": 1,
@@ -277,33 +295,6 @@
       "style": {
         "type": "list"
       }
-    },
-    {
-      "key": "So97So",
-      "name": "🔍九七┃搜索🔍",
-      "type": 3,
-      "api": "csp_So97SoGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
-      "key": "SoHaiYin",
-      "name": "🔍海音┃搜索🔍",
-      "type": 3,
-      "api": "csp_SoHaiYinGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
-      "key": "SoTySo",
-      "name": "🔍天天┃搜索🔍",
-      "type": 3,
-      "api": "csp_SoTySoGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
     }
   ]
 }
