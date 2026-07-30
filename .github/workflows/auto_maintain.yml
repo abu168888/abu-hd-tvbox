@@ -1,0 +1,163 @@
+name: TVBox 全自动维护
+
+on:
+  schedule:
+    - cron: '0 3 */3 * *'
+  workflow_dispatch:
+
+jobs:
+  auto-maintain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TZ: Asia/Shanghai
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 检测配置完整性
+        run: |
+          python3 -c "
+          import json
+          with open('config.json', 'r', encoding='utf-8') as f:
+              config = json.load(f)
+          
+          # 检查必需字段
+          issues = []
+          if 'spider' not in config:
+              issues.append('缺失 spider 字段')
+          if len(config.get('sites', [])) < 10:
+              issues.append(f'源数量过少: {len(config[\"sites\"])}')
+          
+          # 检查排序
+          names = [s.get('name', '') for s in config['sites']]
+          sort_ok = '豆瓣' in names[0] and ('配置' in names[1] or 'Config' in names[1])
+          
+          # 检查禁止源
+          forbidden = ['文才', 'emby', '自主采集', 'SelfShort', 'SelfVariety', 'SelfHot', 'So97So', 'SoHaiYin', 'SoTySo', '王二小']
+          forbidden_found = [f for f in forbidden if any(f in n for n in names)]
+          
+          print(f'总数: {len(config[\"sites\"])}')
+          print(f'排序正确: {sort_ok}')
+          print(f'禁止源: {forbidden_found}')
+          
+          report = {
+              'total': len(config['sites']),
+              'sort_ok': sort_ok,
+              'forbidden': forbidden_found,
+              'issues': issues
+          }
+          with open('integrity_report.json', 'w', encoding='utf-8') as f:
+              json.dump(report, f, ensure_ascii=False)
+          print('完整性检查完成')
+          "
+
+      - name: 检查源分类
+        run: |
+          python3 -c "
+          import json
+          with open('config.json', 'r', encoding='utf-8') as f:
+              config = json.load(f)
+          
+          categories = {'4K': 0, '秒播': 0, '短剧': 0, '体育': 0, '搜索': 0, '豆瓣': 0, '配置': 0}
+          
+          for site in config['sites']:
+              name = site.get('name', '')
+              if any(k in name for k in ['4K', '至臻', '玩偶', '原盘', '剧透']):
+                  categories['4K'] += 1
+              if any(k in name for k in ['秒播', '伯伯', '伊影', '热播', '独播', '瓜子', '贱片', '太狗', '师兄', '韩剧']):
+                  categories['秒播'] += 1
+              if any(k in name for k in ['短剧', '漫剧', '短']):
+                  categories['短剧'] += 1
+              if any(k in name for k in ['体育', 'WWE', '球通', '飞球', '八八', '咖啡', '瓜子']):
+                  categories['体育'] += 1
+              if any(k in name for k in ['搜索', '九七', '海音', '天天']):
+                  categories['搜索'] += 1
+              if '豆瓣' in name:
+                  categories['豆瓣'] += 1
+              if '配置' in name or 'Config' in name:
+                  categories['配置'] += 1
+          
+          print('源分类统计:')
+          for cat, count in categories.items():
+              print(f'  {cat}: {count}')
+          
+          with open('category_report.json', 'w', encoding='utf-8') as f:
+              json.dump(categories, f, ensure_ascii=False)
+          "
+
+      - name: 生成维护报告
+        run: |
+          python3 -c "
+          import json
+          from datetime import datetime
+          
+          with open('integrity_report.json', 'r', encoding='utf-8') as f:
+              integrity = json.load(f)
+          
+          with open('category_report.json', 'r', encoding='utf-8') as f:
+              categories = json.load(f)
+          
+          import subprocess
+          result = subprocess.run(['git', 'log', '--oneline', '-5'], capture_output=True, text=True)
+          git_log = result.stdout
+          
+          report = {
+              'time': datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC'),
+              'total': integrity['total'],
+              'sort_ok': integrity['sort_ok'],
+              'categories': categories,
+              'forbidden': integrity['forbidden'],
+              'issues': integrity['issues'],
+              'git_log': git_log
+          }
+          
+          with open('MAINTENANCE_REPORT.md', 'w', encoding='utf-8') as f:
+              f.write('# TVBox 维护报告\n\n')
+              f.write(f'**时间:** {report[\"time\"]} (北京时间 {datetime.utcnow().strftime(\"%Y-%m-%d %H:%M\")})\n\n')
+              f.write(f'**源总数:** {report[\"total\"]}\n\n')
+              f.write('## 源分类统计\n\n')
+              f.write('| 分类 | 数量 |\n')
+              f.write('|------|------|\n')
+              for cat, count in categories.items():
+                  f.write(f'| {cat} | {count} |\n')
+              f.write('\n## 配置完整性\n\n')
+              f.write(f'| 检查项 | 结果 |\n')
+              f.write(f'|--------|------|\n')
+              f.write(f'| 排序正确 | {\"✅\" if report[\"sort_ok\"] else \"❌\"} |\n')
+              f.write(f'| 无禁止源 | {\"✅\" if not report[\"forbidden\"] else \"❌\"} |\n')
+              if report['forbidden']:
+                  f.write(f'禁止源: {\"，\".join(report[\"forbidden\"])}\n\n')
+              f.write(f'\n## Git 状态\n\n')
+              f.write('```\n' + git_log + '```\n\n')
+              if report['issues']:
+                  f.write(f'⚠️ 发现问题: {\"，\".join(report[\"issues\"])}\n')
+              else:
+                  f.write('✅ 维护通过，配置正常\n')
+          
+          print('维护报告生成完成')
+          print('总源数:', integrity['total'])
+          print('排序:', '✅' if integrity['sort_ok'] else '❌')
+          print('禁止源:', integrity['forbidden'] if integrity['forbidden'] else '无')
+          "
+
+      - name: 上传报告
+        uses: actions/upload-artifact@v4
+        with:
+          name: maintenance-report
+          path: MAINTENANCE_REPORT.md
+
+      - name: 提交报告
+        run: |
+          git config user.name "abu-maintain"
+          git config user.email "abu-maintain@github.com"
+          git add MAINTENANCE_REPORT.md integrity_report.json category_report.json
+          git commit -m "docs: 自动维护报告 $(date +'%Y-%m-%d')" || echo "无变化"
+          git push origin main || echo "推送失败"
