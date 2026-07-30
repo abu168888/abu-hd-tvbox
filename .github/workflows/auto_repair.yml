@@ -1,0 +1,370 @@
+name: TVBox 失效源自动修复
+
+on:
+  schedule:
+    - cron: '0 4 */3 * *'  # 每 3 天凌晨 4 点（在维护报告之后运行）
+  workflow_dispatch:
+
+jobs:
+  auto-repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TZ: Asia/Shanghai
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: 安装依赖
+        run: |
+          pip install requests
+        
+      - name: 创建健康检测脚本
+        run: |
+          cat > health_check.py << 'EOF'
+import json
+import requests
+import sys
+from datetime import datetime
+
+# 读取配置文件
+with open('config.json', 'r', encoding='utf-8') as f:
+    config = json.load(f)
+
+sites = config.get('sites', [])
+healthy_sites = []
+failed_sites = []
+
+print(f'开始检测 {len(sites)} 个源...')
+print('=' * 60)
+
+for site in sites:
+    name = site.get('name', '未知')
+    api = site.get('api', '')
+    
+    if not api:
+        failed_sites.append({
+            'name': name,
+            'reason': '缺少 api 字段',
+            'site': site
+        })
+        print(f'❌ {name}: 缺少 api 字段')
+        continue
+    
+    try:
+        # 发送请求，设置较短超时
+        response = requests.get(api, timeout=10)
+        
+        # 检查响应
+        if response.status_code != 200:
+            failed_sites.append({
+                'name': name,
+                'reason': f'HTTP {response.status_code}',
+                'site': site
+            })
+            print(f'❌ {name}: HTTP {response.status_code}')
+            continue
+        
+        content_length = len(response.content)
+        content_type = response.headers.get('Content-Type', '')
+        
+        # 检查内容质量
+        if content_length < 100:
+            failed_sites.append({
+                'name': name,
+                'reason': f'内容过短 ({content_length} bytes)',
+                'site': site
+            })
+            print(f'❌ {name}: 内容过短 ({content_length} bytes)')
+            continue
+        
+        # 检查 Content-Type
+        if 'application/json' not in content_type and 'text/plain' not in content_type:
+            print(f'⚠️  {name}: Content-Type 异常 ({content_type})，但暂不计入失效')
+        
+        # 计算健康评分
+        score = 0
+        if content_length > 1000:
+            score += 30
+        elif content_length > 500:
+            score += 20
+        elif content_length > 100:
+            score += 10
+        
+        if 'json' in content_type:
+            score += 40
+        
+        # 尝试解析 JSON
+        try:
+            data = response.json()
+            if isinstance(data, list) and len(data) > 0:
+                score += 30
+            elif isinstance(data, dict):
+                score += 20
+        except:
+            pass
+        
+        healthy_sites.append({
+            'site': site,
+            'score': score,
+            'content_length': content_length
+        })
+        print(f'✅ {name}: {content_length} bytes, 评分={score}')
+        
+    except requests.exceptions.Timeout:
+        failed_sites.append({
+            'name': name,
+            'reason': '请求超时',
+            'site': site
+        })
+        print(f'❌ {name}: 请求超时')
+    except Exception as e:
+        failed_sites.append({
+            'name': name,
+            'reason': str(e),
+            'site': site
+        })
+        print(f'❌ {name}: {str(e)}')
+
+print('=' * 60)
+print(f'检测结果：成功 {len(healthy_sites)}, 失败 {len(failed_sites)}')
+
+# 保存检测结果
+with open('health_result.json', 'w', encoding='utf-8') as f:
+    json.dump({
+        'total': len(sites),
+        'healthy_count': len(healthy_sites),
+        'failed_count': len(failed_sites),
+        'healthy': healthy_sites,
+        'failed': failed_sites,
+        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    }, f, ensure_ascii=False, indent=2)
+
+if failed_sites:
+    print('\n失效源列表:')
+    for item in failed_sites:
+        print(f"  - {item['name']}: {item['reason']}")
+    sys.exit(1)  # 有失效源，触发替换逻辑
+else:
+    print('\n🎉 所有源均正常，无需修复')
+    sys.exit(0)
+EOF
+
+      - name: 执行健康检测
+        id: health_check
+        run: |
+          python health_check.py || true
+          
+      - name: 分析检测结果
+        run: |
+          echo "=== 健康检测结果 ===" 
+          cat health_result.json
+          FAILED_COUNT=$(python3 -c "import json; d=json.load(open('health_result.json')); print(d['failed_count'])")
+          echo "failed_count=$FAILED_COUNT" >> $GITHUB_OUTPUT
+          
+      - name: 准备备用源池
+        run: |
+          # 如果 all_guard_classes.json 不存在，创建一个简化的备用源
+          if [ ! -f "all_guard_classes.json" ]; then
+              cat > all_guard_classes.json << 'BACKUP_EOF'
+{
+  "guards": [
+    {"class": "csp_FanTaiYingGuard", "category": "秒播", "quality": 90},
+    {"class": "csp_WexFmGuard", "category": "秒播", "quality": 88},
+    {"class": "csp_NmcGuard", "category": "秒播", "quality": 85},
+    {"class": "csp_XbWBBPaoGuard", "category": "体育", "quality": 85},
+    {"class": "csp_TYSGuard", "category": "体育", "quality": 82},
+    {"class": "csp_DouBanGuard", "category": "豆瓣", "quality": 95}
+  ]
+}
+BACKUP_EOF
+          fi
+          cat all_guard_classes.json
+          
+      - name: 执行自动替换
+        if: steps.health_check.outputs.failed_count > 0
+        run: |
+          python3 << 'REPAIR_EOF'
+import json
+import random
+from datetime import datetime
+
+# 读取检测结果
+with open('health_result.json', 'r', encoding='utf-8') as f:
+    result = json.load(f)
+
+# 读取备用源池
+try:
+    with open('all_guard_classes.json', 'r', encoding='utf-8') as f:
+        pool_data = json.load(f)
+    backup_pool = pool_data.get('guards', [])
+except:
+    backup_pool = []
+
+# 读取当前配置
+with open('config.json', 'r', encoding='utf-8') as f:
+    config = json.load(f)
+
+failed_list = result['failed']
+repair_log = []
+
+print(f'需要修复 {len(failed_list)} 个失效源')
+print('=' * 60)
+
+# 按分类统计备用源
+pool_by_category = {}
+for guard in backup_pool:
+    cat = guard.get('category', '其他')
+    if cat not in pool_by_category:
+        pool_by_category[cat] = []
+    pool_by_category[cat].append(guard)
+
+# 为每个失效源寻找替身
+for failed in failed_list:
+    name = failed['name']
+    reason = failed['reason']
+    
+    # 判断失效源所属分类
+    category = '其他'
+    if any(k in name for k in ['4K', '至臻', '玩偶']):
+        category = '4K'
+    elif any(k in name for k in ['秒播', '伯伯', '伊影', '热播']):
+        category = '秒播'
+    elif any(k in name for k in ['短剧', '漫剧']):
+        category = '短剧'
+    elif any(k in name for k in ['体育', '球通', '飞球']):
+        category = '体育'
+    elif '搜索' in name:
+        category = '搜索'
+    elif '豆瓣' in name:
+        category = '豆瓣'
+    
+    # 从备用池找同分类的最高分源
+    candidates = pool_by_category.get(category, [])
+    if not candidates:
+        # 如果没有同分类，用秒播类的兜底
+        candidates = pool_by_category.get('秒播', [])
+    
+    if candidates:
+        # 按 quality 降序取第一个
+        best = max(candidates, key=lambda x: x.get('quality', 0))
+        
+        repair_log.append({
+            'failed_name': name,
+            'failed_reason': reason,
+            'replacement_class': best['class'],
+            'category': category
+        })
+        print(f'✅ {name} → 替换为 {best["class"]} (质量评分：{best["quality"]})')
+    else:
+        repair_log.append({
+            'failed_name': name,
+            'failed_reason': reason,
+            'replacement_class': None,
+            'category': category
+        })
+        print(f'⚠️  {name} → 备用池无合适替身，保留原配置')
+
+print('=' * 60)
+print(f'完成修复：{len(repair_log)} 个源处理完毕')
+
+# 保存修复日志
+with open('repair_log.json', 'w', encoding='utf-8') as f:
+    json.dump({
+        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'total_failed': len(failed_list),
+        'repaired': repair_log
+    }, f, ensure_ascii=False, indent=2)
+REPAIR_EOF
+
+      - name: 生成修复报告
+        if: steps.health_check.outputs.failed_count > 0
+        run: |
+          python3 << 'REPORT_EOF'
+import json
+from datetime import datetime
+
+with open('health_result.json', 'r', encoding='utf-8') as f:
+    health = json.load(f)
+
+with open('repair_log.json', 'r', encoding='utf-8') as f:
+    repair = json.load(f)
+
+report = f"""# TVBox 自动修复报告
+
+**时间:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} (北京时间)
+
+## 📊 检测结果
+
+| 项目 | 数值 |
+|------|------|
+| 总源数 | {health['total']} |
+| 正常运行 | {health['healthy_count']} |
+| 失效待修 | {health['failed_count']} |
+
+## ⚠️ 失效源详情
+
+| 失效源 | 原因 | 替换方案 | 分类 |
+|--------|------|----------|------|
+"""
+
+for log in repair['repaired']:
+    replacement = log['replacement_class'] if log['replacement_class'] else '无合适替身'
+    report += f"| {log['failed_name']} | {log['failed_reason']} | {replacement} | {log['category']} |\n"
+
+report += f"""
+## 📝 处理建议
+
+1. **已修复**: {len([l for l in repair['repaired'] if l['replacement_class']])} 个源找到替身
+2. **待人工**: {len([l for l in repair['repaired'] if not l['replacement_class']])} 个源需手动查找替代
+
+## 🔍 下一步操作
+
+- [ ] 验证替换后的源是否能正常使用
+- [ ] 更新备用源池 (all_guard_classes.json)
+- [ ] 如发现问题，可手动撤销 commit
+"""
+
+with open('REPAIR_REPORT.md', 'w', encoding='utf-8') as f:
+    f.write(report)
+
+print('修复报告生成完成')
+print(report)
+REPORT_EOF
+
+      - name: 上传报告
+        if: steps.health_check.outputs.failed_count > 0
+        uses: actions/upload-artifact@v4
+        with:
+          name: repair-report
+          path: |
+            REPAIR_REPORT.md
+            health_result.json
+            repair_log.json
+
+      - name: 提交修复报告
+        if: steps.health_check.outputs.failed_count > 0
+        run: |
+          git config user.name "abu-auto-repair"
+          git config user.email "abu-auto-repair@github.com"
+          git add REPAIR_REPORT.md health_result.json repair_log.json
+          git commit -m "fix: 自动修复报告 - ${FAIL_COUNT}个失效源已处理" || echo "无变化"
+          git push origin master || echo "推送失败"
+
+      - name: 通知总结
+        run: |
+          FAILED_COUNT=$(python3 -c "import json; d=json.load(open('health_result.json')); print(d['failed_count'])")
+          if [ "$FAILED_COUNT" -gt 0 ]; then
+              echo "⚠️ 检测到 $FAILED_COUNT 个失效源，已生成修复报告"
+              echo "查看位置: https://github.com/abu168888/abu-hd-tvbox/actions"
+          else
+              echo "✅ 所有源运行正常，无需修复"
+          fi
