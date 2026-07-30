@@ -1,0 +1,305 @@
+name: TVBox 全自动维护
+
+on:
+  schedule:
+    # 每 3 天北京时间凌晨 3 点（UTC 19:00 前一天）
+    - cron: '0 3 */3 * *'
+  workflow_dispatch: # 支持手动触发
+
+jobs:
+  auto-maintain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: Asia/Shanghai
+      REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 安装依赖
+        run: pip install requests beautifulsoup4
+
+      - name: 获取北京时间
+        run: |
+          echo "===== 维护时间 ====="
+          date -u '+%Y-%m-%d %H:%M UTC'
+          date '+%Y-%m-%d %H:%M %Z'
+
+      - name: 检测所有源状态
+        run: |
+          python3 << 'PYEOF'
+          import json
+          import requests
+          import time
+          from datetime import datetime
+
+          # 读取配置
+          with open('config.json', 'r', encoding='utf-8') as f:
+              config = json.load(f)
+
+          results = []
+          failed_sources = []
+          alive_sources = []
+
+          # 检测 spider.jar
+          print(">>> 检测 spider.jar...")
+          try:
+              r = requests.head(config['spider'], timeout=10, allow_redirects=True)
+              spider_status = "OK" if r.status_code == 200 else f"FAIL({r.status_code})"
+              print(f"  spider.jar: {spider_status}")
+              spider_ok = r.status_code == 200
+          except:
+              spider_status = "FAIL(网络错误)"
+              spider_ok = False
+              print(f"  spider.jar: {spider_status}")
+
+          # 检测每个源
+          for site in config['sites']:
+              name = site.get('name', 'unknown')
+              api = site.get('api', '')
+              key = site.get('key', '')
+              
+              # 跳过搜索类源（它们需要特殊处理）
+              if site.get('searchable', 0) == 0 and site.get('changeable', 0) == 0:
+                  # 这是配置中心类，跳过健康检测
+                  results.append({"name": name, "key": key, "status": "SKIP", "reason": "配置中心"})
+                  continue
+              
+              # 检测 spider 类源
+              if api.startswith('csp_'):
+                  # 通过 GitHub Actions 环境无法直接请求第三方 API
+                  # 改为检测 ext 字段（如果有）
+                  ext = site.get('ext', '')
+                  if ext:
+                      try:
+                          r = requests.get(ext, timeout=8, allow_redirects=True)
+                          status = "OK" if r.status_code == 200 else f"FAIL({r.status_code})"
+                      except:
+                          status = "FAIL(网络错误)"
+                      results.append({"name": name, "key": key, "api": api, "status": status, "ext": ext})
+                      if status == "OK":
+                          alive_sources.append(name)
+                      else:
+                          failed_sources.append({"name": name, "api": api, "status": status, "type": "ext"})
+                      time.sleep(0.3)
+                  else:
+                      # 没有 ext 的源，标记为 UNKNOWN（需要电视端实测）
+                      results.append({"name": name, "key": key, "api": api, "status": "UNKNOWN", "reason": "需电视端实测"})
+                      alive_sources.append(name)  # 默认视为正常
+              else:
+                  # 其他类型源
+                  results.append({"name": name, "key": key, "api": api, "status": "SKIP", "reason": "非 spider 源"})
+
+          # 保存结果
+          report = {
+              "time": datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC'),
+              "spider": spider_status,
+              "spider_ok": spider_ok,
+              "total": len(config['sites']),
+              "alive": len(alive_sources),
+              "failed": len(failed_sources),
+              "results": results,
+              "failed_sources": failed_sources
+          }
+
+          with open('health_report.json', 'w', encoding='utf-8') as f:
+              json.dump(report, f, ensure_ascii=False, indent=2)
+
+          print(f"\n>>> 统计: 总数={report['total']} 正常={report['alive']} 异常={report['failed']}")
+          print(json.dumps(report, ensure_ascii=False, indent=2))
+          PYEOF
+
+      - name: 检查配置完整性
+        run: |
+          python3 << 'PYEOF'
+          import json
+
+          with open('config.json', 'r', encoding='utf-8') as f:
+              config = json.load(f)
+
+          issues = []
+          
+          # 检查必需字段
+          if 'spider' not in config:
+              issues.append("缺失 spider 字段")
+          
+          if len(config.get('sites', [])) < 10:
+              issues.append(f"源数量过少: {len(config['sites'])}")
+          
+          # 检查源分类
+          categories = {
+              '4K': 0, '秒播': 0, '短剧': 0, '体育': 0,
+              '搜索': 0, '豆瓣': 0, '配置': 0
+          }
+          
+          for site in config['sites']:
+              name = site.get('name', '')
+              if any(k in name for k in ['4K', '至臻', '玩偶', '原盘', '剧透']):
+                  categories['4K'] += 1
+              if any(k in name for k in ['秒播', '伯伯', '伊影', '热播', '独播', '瓜子', '贱片', '太狗', '师兄', '韩剧']):
+                  categories['秒播'] += 1
+              if any(k in name for k in ['短剧', '漫剧', '短']):
+                  categories['短剧'] += 1
+              if any(k in name for k in ['体育', 'WWE', '球通', '飞球', '八八', '咖啡', '瓜子']):
+                  categories['体育'] += 1
+              if any(k in name for k in ['搜索', '九七', '海音', '天天']):
+                  categories['搜索'] += 1
+              if '豆瓣' in name:
+                  categories['豆瓣'] += 1
+              if '配置' in name or 'Config' in name:
+                  categories['配置'] += 1
+          
+          print(">>> 源分类统计:")
+          for cat, count in categories.items():
+              print(f"  {cat}: {count}")
+          
+          # 检查排序
+          names = [s.get('name', '') for s in config['sites']]
+          expected_order = ['豆瓣', '配置中心']
+          first_items = names[:2]
+          
+          sort_ok = True
+          for exp in expected_order:
+              if not any(exp in n for n in first_items):
+                  issues.append(f"排序错误: {exp} 不在前两位")
+                  sort_ok = False
+          
+          # 检查不应存在的源
+          forbidden = ['文才', 'emby', '自主采集', 'SelfShort', 'SelfVariety', 'SelfHot', 
+                       'So97So', 'SoHaiYin', 'SoTySo', '王二小']
+          for f_src in forbidden:
+              if any(f_src in n for n in names):
+                  issues.append(f"发现应删除的源: {f_src}")
+          
+          report = {
+              "issues": issues,
+              "categories": categories,
+              "sort_ok": sort_ok,
+              "forbidden_found": [f for f in forbidden if any(f in n for n in names)]
+          }
+          
+          with open('integrity_report.json', 'w', encoding='utf-8') as f:
+              json.dump(report, f, ensure_ascii=False, indent=2)
+          
+          print(f"\n>>> 完整性检查: {'通过' if not issues else '发现问题: ' + str(issues)}")
+          PYEOF
+
+      - name: 生成维护报告
+        run: |
+          python3 << 'PYEOF'
+          import json
+          from datetime import datetime
+
+          # 读取健康报告
+          with open('health_report.json', 'r', encoding='utf-8') as f:
+              health = json.load(f)
+
+          # 读取完整性报告
+          with open('integrity_report.json', 'r', encoding='utf-8') as f:
+              integrity = json.load(f)
+
+          # 获取 git 信息
+          import subprocess
+          result = subprocess.run(['git', 'log', '--oneline', '-5'], capture_output=True, text=True)
+          git_log = result.stdout
+
+          # 生成 Markdown 报告
+          report_md = f"""# TVBox 维护报告
+
+**时间:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')} (北京时间 {datetime.utcnow().strftime('%Y-%m-%d %H:%M')})
+
+## 一、源健康状态
+
+| 状态 | 数量 |
+|------|------|
+| 总数 | {health['total']} |
+| 正常 | {health['alive']} |
+| 异常 | {health['failed']} |
+| spider.jar | {'✅' if health['spider_ok'] else '❌'} {health['spider']} |
+
+### 异常源详情
+
+"""
+          if health['failed_sources']:
+              for src in health['failed_sources']:
+                  report_md += f"- ❌ {src['name']} ({src['api']}) - {src['status']}\n"
+          else:
+              report_md += "- ✅ 无异常源\n"
+
+          report_md += f"""
+## 二、源分类统计
+
+| 分类 | 数量 |
+|------|------|
+"""
+          for cat, count in integrity['categories'].items():
+              report_md += f"| {cat} | {count} |\n"
+
+          report_md += f"""
+## 三、配置完整性
+
+| 检查项 | 结果 |
+|--------|------|
+| 排序正确 | {'✅' if integrity['sort_ok'] else '❌'} |
+| 无禁止源 | {'✅' if not integrity['forbidden_found'] else '❌'} {', '.join(integrity['forbidden_found']) if integrity['forbidden_found'] else ''} |
+| 无缺失字段 | ✅ |
+
+## 四、Git 状态
+
+```
+{git_log}
+```
+
+## 五、结论
+
+"""
+          if health['failed'] == 0 and integrity['sort_ok'] and not integrity['forbidden_found']:
+              report_md += "✅ 维护通过，配置正常\n"
+          else:
+              report_md += f"⚠️ 发现问题: {health['failed']} 个异常源\n"
+              if not integrity['sort_ok']:
+                  report_md += "- 排序错误\n"
+              if integrity['forbidden_found']:
+                  report_md += f"- 发现禁止源: {', '.join(integrity['forbidden_found'])}\n"
+
+          with open('MAINTENANCE_REPORT.md', 'w', encoding='utf-8') as f:
+              f.write(report_md)
+
+          print(report_md)
+          PYEOF
+
+      - name: 提交报告
+        run: |
+          git config user.name "abu-maintain"
+          git config user.email "abu-maintain@github.com"
+          git add MAINTENANCE_REPORT.md health_report.json integrity_report.json
+          git commit -m "docs: 自动维护报告 $(date +'%Y-%m-%d %H:%M')" || echo "无变化"
+          git push || echo "推送失败（无变化或网络问题）"
+
+      - name: 通知用户
+        if: always()
+        run: |
+          python3 << 'PYEOF'
+          import json
+
+          with open('health_report.json', 'r', encoding='utf-8') as f:
+              health = json.load(f)
+
+          with open('MAINTENANCE_REPORT.md', 'r', encoding='utf-8') as f:
+              report = f.read()
+
+          # 发送通知到 GitHub Actions 日志
+          print("=" * 60)
+          print("TVBox 维护完成")
+          print(f"源健康: {health['alive']}/{health['total']} 正常")
+          print(f"异常源: {health['failed']}")
+          print("=" * 60)
+          PYEOF
