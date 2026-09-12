@@ -1,392 +1,117 @@
 {
-  "spider": "https://abu168888.github.io/tvbox-config/spider.jar",
-  "wallpaper": "https://jianbian.chuqiuyu.workers.dev",
-  "logo": "https://storage.7x24cc.com/storage-server/presigned/ss1/a6-online-fileupload/newMediaFile/3CEAE9E_773_wexfnw_20250911190012684newMediaFile.gif",
+  "spider": "https://cdn.jsdelivr.net/gh/abu168888/tvbox-config@main/spider.jar",
+  "wallpaper": "https://api.likehub.cc/img",
   "sites": [
     {
-      "key": "Wexconfig",
-      "name": "Config Center",
-      "type": 3,
-      "api": "csp_WexConfigGuard",
-      "searchable": 0,
-      "changeable": 0,
-      "indexs": 0,
-      "style": {
-        "type": "list"
-      }
-    },
-    {
       "key": "NewDouBan",
-      "name": "Douban Hot",
+      "name": "ğŸ“šè±†ç“£æ¨è",
       "type": 3,
-      "api": "csp_NewDouBanGuard",
-      "indexs": 1,
-      "searchable": 0,
-      "quickSearch": 0,
-      "filterable": 0,
-      "ext": "https://abu168888.github.io/tvbox-config/lib/20260414181247-ae51abfbfe.txt"
-    },
-    {
-      "key": "WexEmby",
-      "name": "[4K è¶…æ¸…] ğŸ€„ï¸embyâ”ƒ4KğŸ€„ï¸",
-      "type": 3,
-      "api": "csp_WexembyGuard",
-      "searchable": 1,
-      "changeable": 1
-    },
-    {
-      "key": "åŸç›˜",
-      "name": "[4K è¶…æ¸…] ğŸ’“â€åŸç›˜â”ƒ4KğŸ’“â€",
-      "type": 3,
-      "api": "csp_New4KZnGuard",
+      "api": "csp_DouBan",
       "searchable": 1,
       "quickSearch": 1,
-      "changeable": 0
+      "filterable": 1,
+      "ext": "https://cdn.jsdelivr.net/gh/abu168888/tvbox-config@main/lib/douban.json"
+    },
+    {
+      "key": "YGP",
+      "name": "ğŸ“ºæ–°ç‰‡ï½œç£åŠ›",
+      "type": 3,
+      "api": "csp_YGP",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0
     },
     {
       "key": "ç©å¶",
-      "name": "[4K è¶…æ¸…] ğŸ’“â€ç©å¶â”ƒ4KğŸ’“â€",
+      "name": "ğŸ‘¤ç©å¶ï½œ4K",
       "type": 3,
-      "api": "csp_NewWoggGuard",
+      "api": "csp_WoGG",
       "searchable": 1,
       "quickSearch": 1,
-      "changeable": 0
+      "filterable": 1,
+      "ext": {
+        "l": "http://127.0.0.1:9978/api/v1/vod",
+        "quark": "",
+        "uc": "",
+        "bilibili": "",
+        "ali": "",
+        "quarkCookie": "",
+        "notice": "ğŸ“¢ğŸ“¢ğŸ“¢"
+      }
+°(€€€ì(€€€€€€‰­•äˆè€‰A…¹M½Ôˆ°(€€€€€€‰¹…µ”ˆè€‹Â~R7ncšBpˆ°(€€€€€€‰ÑåÁ”ˆè€Ì°(€€€€€€‰…Á¤ˆè€‰ÍÁ}A…¹M½Ôˆ°(€€€€€€‰Í•…É¡…‰±”ˆè€Ä°(€€€€€€‰ÅÕ¥­M•…É ˆè€Ä°(€€€€€€‰™¥±Ñ•É…‰±”ˆè€Ä(€€€ô°(€€€ì(€€€€€€‰­•äˆè€‰e¥M¼ˆ°(€€€€€€‰¹…µ”ˆè€‹Â~R7šbOšBpˆ°(€€€€€€‰ÑåÁ”ˆè€Ì°(€€€€€€‰…Á¤ˆè€‰ÍÁ}e¥M¼ˆ°(€€€€€€‰Í•…É¡…‰±”ˆè€Ä°(€€€€€€‰ÅÕ¥­M•…É ˆè€Ä°(€€€€€€‰™¥±Ñ•É…‰±”ˆè€À(€€€ô°(€€€ì(€€€€€€‰­•äˆè€‹šbOšBs|ˆ°(€€€€€€‰¹…µ”ˆè€‹Â~R7šbOšBs|ˆ°(€€€€€€‰ÑåÁ”ˆè€Ì°(€€€€€€‰…Á¤ˆè€‰ÍÁ}e¥M¼ˆ°(€€€€€€‰Í•…É¡…‰±”ˆè€Ä°(€€€€€€‰ÅÕ¥­M•…É ˆè€Ä°(€€€€€€‰™¥±Ñ•É…‰±”ˆè€À°(€€€€€€‰•áĞˆè€‰¡ÑÑÁÌè¼½‘¸¹©Í‘•±¥Ò.net/gh/abu168888/tvbox-config@main/lib/easoso.json"
     },
     {
-      "key": "WexBoBo",
-      "name": "[ç§’æ’­ä¸“çº¿] ğŸ‡ä¼¯ä¼¯â”ƒç§’æ’­ğŸ‡",
+      "key": "LibVio",
+      "name": "ğŸ“ºLibVio",
       "type": 3,
-      "api": "csp_WexBoBoGuard",
+      "api": "csp_LibVio",
       "searchable": 1,
       "quickSearch": 1,
-      "changeable": 0
+      "filterable": 1,
+      "ext": "https://cdn.jsdelivr.net/gh/abu168888/tvbox-config@main/lib/libvio.json"
     },
     {
-      "key": "WexYiYs",
-      "name": "[ç§’æ’­ä¸“çº¿] ğŸ’¥ä¼Šå½±â”ƒç§’æ’­ğŸ’¥",
+      "key": "æœ¬åœ°",
+      "name": "ğŸ“æœ¬åœ°",
       "type": 3,
-      "api": "csp_WexYiYsGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
+      "api": "csp_LocalFile",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 0
     },
     {
-      "key": "WexWenCai",
-      "name": "[ç§’æ’­ä¸“çº¿] ğŸ’¥æ–‡æ‰â”ƒç§’æ’­ğŸ’¥",
+      "key": "bili",
+      "h[YHˆ¼'ál{î#ùdå9dê{ïg9d":fáˆ‹ˆ\HˆËˆ˜\Hˆ˜ÜÜĞš[H‹ˆœÙX\˜ÚX›HˆKˆœ]ZXÚÔÙX\˜Úˆˆ™š[\˜X›HˆKˆ™^ˆšÎ‹ËØÙ‹šœÙ[]œ‹›™]ÙÚØXLMİ˜›ŞXÛÛ™šYĞXZ[‹ÛX‹Øš[KšœÛÛˆ‚ˆKˆÂˆšÙ^Hˆ˜š[WÜ672"À¢&æÖR#¢/	ø[ûˆşY9NY:ûÙÎx˜~XÙR"À¢'G—R#¢2À¢&’#¢&77ô&–Æ’"À¢'6V&6†&ÆR#¢À¢'V–6µ6V&6‚#¢À¢&f–ÇFW&&ÆR#¢À¢&W‡B#¢&‡GG3¢òö6Fâæ§6FVÆ—g"ææWBöv‚ö'Scƒƒƒ‚÷Gf&÷‚Ö6öæf–tÖ–âöÆ–"ö&–Æ—v72æ§6öâ ¢Ú    {
+      "key": "Aid",
+      "name": "ğŸ¥æ€¥æ•‘ï½œæ•™å­¦",
       "type": 3,
-      "api": "csp_WexWenCaiGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0,
-      "ext": "https://api.wenchai.net"
-    },
-    {
-      "key": "WexReBo",
-      "name": "[ç§’æ’­ä¸“çº¿] ğŸ’¥çƒ­æ’­â”ƒç§’æ’­ğŸ’¥",
-      "type": 3,
-      "api": "csp_WexReBoGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
-      "key": "WexGuaZi",
-      "name": "[ç§’æ’­ä¸“çº¿] ğŸ’¥ç“œå­â”ƒç§’æ’­ğŸ’¥",
-      "type": 3,
-      "api": "csp_WexGuaZiGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
-      "key": "è³¤è³¤",
-      "name": "[ç§’æ’­ä¸“çº¿] ğŸ’¥è´±ç‰‡â”ƒç§’æ’­ğŸ’¥",
-      "type": 3,
-      "api": "csp_WexJianPianGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
-      "key": "SportGuaZi",
-      "name": "[ä½“è‚²ç›´æ’­] ğŸŒç“œå­â”ƒä½“è‚²ğŸŒ",
-      "type": 3,
-      "api": "csp_SportGuaZiGuard",
-      "searchable": 1,
-      "changeable": 0,
+      "api": "csp_FirstAid",
+      "searchable": 0,
+      "quickSearch": 0,
+      "filterable": 1,
       "style": {
-        "type": "list"
+        "type": "rect",
+        "ratio": 1.36
       }
     },
     {
-      "key": "ManJuQiMao",
-      "name": "[çŸ­å‰§ä¸“åŒº] ğŸ‰æ¼«å‰§â”ƒå°çŒ«ğŸ‰",
+      "key": "çœ‹çƒ",
+      "name": "âš½ï¸çœ‹çƒ",
       "type": 3,
-      "ç±»å‹": "çŸ­å‰§",
-      "api": "csp_ManJuQiMaoGuard",
-      "searchable": 1,
-      "changeable": 0
-    },
-    {
-      "key": "ManJuHuoLong",
-      "name": "[çŸ­å‰§ä¸“åŒº] ğŸ‰æ¼«å‰§â”ƒå°é¾™ğŸ‰",
-      "type": 3,
-      "ç±»å‹": "çŸ­å‰§",
-      "api": "csp_ManJuHuoLongGuard",
-      "searchable": 1,
-      "changeable": 0
-    },
-    {
-      "key": "ManJuXiFan",
-      "name": "[çŸ­å‰§ä¸“åŒº] ğŸ‰æ¼«çŸ­â”ƒå°å–œğŸ‰",
-      "type": 3,
-      "ç±»å‹": "çŸ­å‰§",
-      "api": "csp_ManJuXiFanGuard",
-      "searchable": 1,
-      "changeable": 0
-    },
-    {
-      "key": "ManJuHongGuo",
-      "name": "[çŸ­å‰§ä¸“åŒº] ğŸ‰æ¼«çŸ­â”ƒå°çº¢ğŸ‰",
-      "type": 3,
-      "ç±»å‹": "çŸ­å‰§",
-      "api": "csp_ManJuHongGuoGuard",
-      "searchable": 1,
-      "changeable": 0
-    },
-    {
-      "key": "ManJuAiHeMa",
-      "name": "[çŸ­å‰§ä¸“åŒº] ğŸ‰æ¼«çŸ­â”ƒå°é©¬ğŸ‰",
-      "type": 3,
-      "ç±»å‹": "çŸ­å‰§",
-      "api": "csp_DuanJuHeMaGuard",
-      "searchable": 1,
-      "changeable": 0
-    },
-    {
-      "key": "DuanJuHaoKan",
-      "name": "[çŸ­å‰§ä¸“åŒº] ğŸ‰çŸ­å‰§â”ƒå¥½çœ‹ğŸ‰",
-      "type": 3,
-      "ç±»å‹": "çŸ­å‰§",
-      "api": "csp_DuanJuHaoKanGuard",
-      "searchable": 1,
-      "changeable": 0
-    },
-    {
-      "key": "DuanJuQiMiao",
-      "name": "[çŸ­å‰§ä¸“åŒº] ğŸ‰çŸ­å‰§â”ƒå°çŒ«ğŸ‰",
-      "type": 3,
-      "ç±»å‹": "çŸ­å‰§",
-      "api": "csp_DuanJuQiMiaoGuard",
-      "searchable": 1,
-      "changeable": 0
-    },
-    {
-      "key": "DuanJuWeiGuan",
-      "name": "[çŸ­å‰§ä¸“åŒº] ğŸ‰çŸ­å‰§â”ƒå°è–‡ğŸ‰",
-      "type": 3,
-      "ç±»å‹": "çŸ­å‰§",
-      "api": "csp_DuanJuWeiGuanGuard",
-      "searchable": 1,
-      "changeable": 0
-    },
-    {
-      "key": "DuanJuXingYa",
-      "name": "[çŸ­å‰§ä¸“åŒº] ğŸ‰çŸ­å‰§â”ƒæ˜Ÿæ˜ŸğŸ‰",
-      "type": 3,
-      "ç±»å‹": "çŸ­å‰§",
-      "api": "csp_DuanJuXingYaGuard",
-      "searchable": 1,
-      "changeable": 0
-    },
-    {
-      "key": "SportWwe",
-      "name": "[ä½“è‚²ç›´æ’­] ğŸŒWWEâ”ƒä½“è‚²ğŸŒ",
-      "type": 3,
-      "api": "csp_SportWweGuard",
-      "searchable": 1,
-      "changeable": 0,
-      "style": {
-        "type": "list"
-      }
-    },
-    {
-      "key": "SportKanqiu",
-      "name": "[ä½“è‚²ç›´æ’­] ğŸŒå…«å…«â”ƒä½“è‚²ğŸŒ",
-      "type": 3,
-      "api": "csp_SportKanqiuGuard",
-      "searchable": 1,
-      "changeable": 0
-    },
-    {
-      "key": "SportKaFei",
-      "name": "[ä½“è‚²ç›´æ’­] ğŸŒå’–å•¡â”ƒä½“è‚²ğŸŒ",
-      "type": 3,
-      "api": "csp_SportKaFeiGuard",
-      "searchable": 1,
-      "changeable": 0,
-      "style": {
-        "type": "list"
-      }
-    },
-    {
-      "key": "SportKanQiuTong",
-      "name": "[ä½“è‚²ç›´æ’­] ğŸŒçƒé€šâ”ƒä½“è‚²ğŸŒ",
-      "type": 3,
-      "api": "csp_SportKanQiuTongGuard",
-      "searchable": 1,
-      "changeable": 0,
-      "style": {
-        "type": "list"
-      }
-    },
-    {
-      "key": "SportFeiQiu",
-      "name": "[ä½“è‚²ç›´æ’­] ğŸŒé£çƒâ”ƒä½“è‚²ğŸŒ",
-      "type": 3,
-      "api": "csp_SportFeiQiuGuard",
-      "searchable": 1,
-      "changeable": 0,
-      "style": {
-        "type": "list"
-      }
-    },
-    {
-      "key": "So97So",
-      "name": "Search 97",
-      "type": 3,
-      "api": "csp_So97SoGuard",
+      "api": "csp_Kanqiu",
       "searchable": 1,
       "quickSearch": 1,
-      "changeable": 0
+      "filterable": 1
     },
     {
-      "key": "SoHaiYin",
-      "name": "Search HaiYin",
+      "key": "csp_Funletu",
+      "name": "ğŸ“ºè¶£ç›˜ï½œæœç´¢",
       "type": 3,
-      "api": "csp_SoHaiYinGuard",
+      "api": "csp_Funletu",
       "searchable": 1,
       "quickSearch": 1,
-      "changeable": 0
+      "filterable": 1,
+      "ext": "http://www.funletu.com"
     },
     {
-      "key": "SoTySo",
-      "name": "Search TySo",
+      "key": "drpy_1",
+      "name": "ğŸ¬ç£åŠ›ï½œæœç´¢",
       "type": 3,
-      "api": "csp_SoTySoGuard",
+      "api": "csp_XPath",
       "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
+      "quickSearch": 0,
+      "filterable": 0,
+      "ext": "https://cdn.jsdelivr.net/gh/abu168888/tvbox-config@main/lib/xpath-xbtt.json"
     },
     {
-      "key": "SelfShortDrama",
-      "name": "ğŸ¬çŸ­å‰§â”ƒè‡ªä¸»é‡‡é›†",
+      "key": "drpy_2",
+      "name": "ğŸ¬6Vï½œç£åŠ›",
       "type": 3,
-      "api": "csp_SelfShortDrama",
+      "api": "csp_XPath",
       "searchable": 1,
       "quickSearch": 1,
-      "changeable": 0,
-      "ext": "http://192.168.1.100:5000/api/v1/short_drama"
-    },
-    {
-      "key": "SelfVariety",
-      "name": "ğŸ“ºç»¼è‰ºâ”ƒè‡ªä¸»é‡‡é›†",
-      "type": 3,
-      "api": "csp_SelfVariety",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0,
-      "ext": "http://192.168.1.100:5000/api/v1/variety"
-    },
-    {
-      "key": "SelfHot",
-      "name": "ğŸ”¥çƒ­é—¨â”ƒè‡ªä¸»é‡‡é›†",
-      "type": 3,
-      "api": "csp_SelfHot",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0,
-      "ext": "http://192.168.1.100:5000/api/v1/hot"
-    },
-    {
-      "key": "æ–°6V",
-      "name": "[ç§’æ’­ä¸“çº¿] ğŸ‡æ–°6Vâ”ƒç£åŠ›ğŸ‡",
-      "type": 3,
-      "api": "csp_WexXb6vGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
-      "key": "WexIkanBot",
-      "name": "[ç§’æ’­ä¸“çº¿] ğŸ‡çˆ±çœ‹â”ƒé‡‡é›†ğŸ‡",
-      "type": 3,
-      "api": "csp_WexIkanBotGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
-      "key": "WexV6TeGou",
-      "name": "[ç§’æ’­ä¸“çº¿] ğŸ’¥å¤ªç‹—â”ƒç§’æ’­ğŸ’¥",
-      "type": 3,
-      "api": "csp_WexV6TeGouGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
-      "key": "WexV6DaShiXiong",
-      "name": "[ç§’æ’­ä¸“çº¿] ğŸ’¥å¸ˆå…„â”ƒç§’æ’­ğŸ’¥",
-      "type": 3,
-      "api": "csp_WexV6DaShiXiongGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
-      "key": "WexDuBoKu",
-      "name": "[ç§’æ’­ä¸“çº¿] ğŸ’¥ç‹¬æ’­â”ƒç§’æ’­ğŸ’¥",
-      "type": 3,
-      "api": "csp_WexDuBoKuGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
-    },
-    {
-      "key": "WexHanXiaoQuan",
-      "name": "[ç§’æ’­ä¸“çº¿] ğŸ’¥éŸ©å‰§â”ƒç§’æ’­ğŸ’¥",
-      "type": 3,
-      "api": "csp_WexHanXiaoQuanGuard",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0
+      "filterable": 0,
+      "ext": "https://cdn.jsdelivr.net/gh/abu168888/tvbox-config@main/lib/xpath666.json"
     }
-  ],
-  "_version": {
-    "type": "6.0-hybrid-architecture",
-    "created": "2026-07-29",
-    "total_sources": 38,
-    "description": "æ··åˆæ¶æ„ - 35 æº + 3 è‡ªä¸»é‡‡é›† API",
-    "features": [
-      "é…ç½®ä¸­å¿ƒ",
-      "è±†ç“£çƒ­é—¨",
-      "4K è¶…æ¸…",
-      "ç§’æ’­ä¸“çº¿",
-      "çŸ­å‰§ä¸“åŒº",
-      "ä½“è‚²ç›´æ’­",
-      "æœç´¢èšåˆ",
-      "è‡ªä¸»é‡‡é›†ï¼ˆçŸ­å‰§/ç»¼è‰º/çƒ­é—¨ï¼‰"
-    ],
-    "autonomous_api": {
-      "base_url": "http://192.168.1.100:5000",
-      "docs": "/api/v1",
-      "health": "/health",
-      "collectors": [
-        "short_drama",
-        "variety",
-        "hot"
-      ]
-    }
-  }
+  ]
 }
