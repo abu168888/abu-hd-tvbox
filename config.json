@@ -2,68 +2,11 @@
   "spider": "https://raw.githubusercontent.com/abu168888/tvbox-config/main/spider.jar",
   "wallpaper": "https://api.likehum.com/img",
   "sites": [
-    {
-      "key": "MuOu",
-      "name": "木偶4K",
-      "type": 3,
-      "api": "csp_MuOu",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "JuShi",
-      "name": "剧透4K",
-      "type": 3,
-      "api": "csp_JuShi",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "Czy",
-      "name": "厂长",
-      "type": 3,
-      "api": "csp_Czy",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "NanMi",
-      "name": "农民影视",
-      "type": 3,
-      "api": "csp_NanMi",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "WoGG",
-      "name": "玩偶哥哥",
-      "type": 3,
-      "api": "csp_WoGG",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": {
-        "l": "http://127.0.0.1:9978/api/v1/vod",
-        "quark": "",
-        "uc": "",
-        "biliili": "",
-        "ali": "",
-        "quarkCookie": "",
-        "notice": "需要访问本地服务"
-      }
-    },
-    {
-      "key": "闪电",
-      "name": "闪电",
-      "type": 1,
-      "api": "https://sdzyapi.com/api.php/provide/vod/",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    }
+    {"key": "闪电", "name": "闪电", "type": 1, "api": "https://sdzyapi.com/api.php/provide/vod/", "searchable": 1, "quickSearch": 1, "filterable": 1},
+    {"key": "光速", "name": "光速", "type": 1, "api": "https://api.guangsuapi.com/api.php/provide/vod/", "searchable": 1, "quickSearch": 1, "filterable": 1},
+    {"key": "红牛", "name": "红牛", "type": 1, "api": "https://www.hongniuzy2.com/api.php/provide/vod/", "searchable": 1, "quickSearch": 1, "filterable": 1},
+    {"key": "极速", "name": "极速", "type": 1, "api": "https://jszyapi.com/api.php/provide/vod/", "searchable": 1, "quickSearch": 1, "filterable": 1},
+    {"key": "量子", "name": "量子", "type": 1, "api": "https://cj.lziapi.com/api.php/provide/vod/", "searchable": 1, "quickSearch": 1, "filterable": 1},
+    {"key": "非凡", "name": "非凡", "type": 1, "api": "http://cj.ffzyapi.com/api.php/provide/vod/", "searchable": 1, "quickSearch": 1, "filterable": 1}
   ]
 }
